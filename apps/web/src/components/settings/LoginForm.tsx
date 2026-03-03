@@ -44,7 +44,7 @@ export const LoginForm = () => {
       </button>
 
       <div className="text-center text-[12px] text-t3 mt-[24px]">
-        Don't have an account?{" "}
+        Don't have an account?{""}
         <span className="text-[12px] text-primg cursor-pointer">Sign up for free</span>
       </div>
     </div>

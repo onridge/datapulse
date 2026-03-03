@@ -13,6 +13,11 @@
     "lint:fix": "pnpm -r lint:fix"
   },
   "devDependencies": {
-     "eslint": "^9.0.0"
+     "eslint": "^9.39.3"
+  },
+    "pnpm": {
+    "overrides": {
+      "eslint": "^9.39.3"
+    }
   }
 }
