@@ -10,11 +10,15 @@
     "lint:fix": "eslint src/**/*.{ts,tsx} --fix"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.90.21",
+    "@tanstack/react-query-devtools": "^5.91.3",
     "clsx": "^2.1.1",
+    "graphql-request": "^7.4.0",
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "tailwind-merge": "^3.5.0"
+    "tailwind-merge": "^3.5.0",
+    "zustand": "^5.0.11"
   },
   "devDependencies": {
     "@datapulse/eslint-config": "workspace:*",

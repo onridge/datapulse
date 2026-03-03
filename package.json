@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev:api": "pnpm --filter api dev",
+    "dev:api": "pnpm --filter datapulse-api dev",
     "dev:web": "pnpm --filter web dev",
     "dev": "pnpm -r --parallel dev",
-    "build:api": "pnpm --filter api build",
+    "build:api": "pnpm --filter datapulse-api build",
     "build:web": "pnpm --filter web build",
     "lint": "pnpm -r lint",
     "format": "pnpm -r format",
