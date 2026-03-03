@@ -1,8 +1,6 @@
-import js from "@eslint/js";
+import { createConfig } from "@datapulse/eslint-config";
 
-export default [
-  {
-    ...js.configs.recommended,
-    files: ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx"],
-  },
-];
+export default createConfig({
+  tsconfigPath: "./tsconfig.json",
+  isNext: true,
+});

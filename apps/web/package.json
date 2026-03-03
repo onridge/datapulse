@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint":     "eslint src/**/*.{ts,tsx}",
+    "lint": "eslint src/**/*.{ts,tsx}",
     "lint:fix": "eslint src/**/*.{ts,tsx} --fix"
   },
   "dependencies": {
@@ -17,6 +17,7 @@
     "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
+    "@datapulse/eslint-config": "workspace:*",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

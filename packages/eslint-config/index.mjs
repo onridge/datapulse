@@ -1,34 +1,29 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
 import typescriptPlugin from "@typescript-eslint/eslint-plugin";
 import typescriptParser from "@typescript-eslint/parser";
 import importPlugin from "eslint-plugin-import";
 import prettierPlugin from "eslint-plugin-prettier";
+import prettierConfig from "eslint-config-prettier";
+import coreWebVitals from "eslint-config-next/core-web-vitals";
+import globals from "globals";
 
 export function createConfig({ tsconfigPath, isNext = false } = {}) {
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = dirname(__filename);
-
-  const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: js.configs.recommended,
-  });
-
   return [
-    ...(isNext ? compat.extends("next/core-web-vitals") : []),
+    ...(isNext ? coreWebVitals : [js.configs.recommended]),
     {
       files: ["**/*.ts", "**/*.tsx"],
       plugins: {
         "@typescript-eslint": typescriptPlugin,
-        "import": importPlugin,
         "prettier": prettierPlugin,
+        ...(isNext ? {} : { "import": importPlugin }),
       },
       languageOptions: {
         parser: typescriptParser,
         parserOptions: {
           project: tsconfigPath ?? "./tsconfig.json",
+        },
+        globals: {
+          ...(isNext ? globals.browser : globals.node),
         },
       },
       rules: {
@@ -43,6 +38,7 @@ export function createConfig({ tsconfigPath, isNext = false } = {}) {
         }],
         "import/no-duplicates": "error",
         "prettier/prettier": "error",
+         ...(isNext && { "react/no-unescaped-entities": "off" }),
       },
       settings: {
         "import/resolver": {
@@ -50,5 +46,6 @@ export function createConfig({ tsconfigPath, isNext = false } = {}) {
         },
       },
     },
+    prettierConfig,
   ];
 }
