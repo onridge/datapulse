@@ -6,10 +6,9 @@ import React, { useState } from "react";
 import { PasswordStrength } from "@/components/auth/sign-up/StrengthPassword";
 import { Logo } from "@/components/UI/Logo";
 import { cn } from "@/lib/utils";
+import { useRegisterStore } from "@/store/useRegisterStore";
 
 import { StepIndicator } from "./StepIndicator";
-
-import { useRegisterStore } from "@/store/useRegisterStore";
 
 export function Step1Account() {
   const { nextStep, setData, step } = useRegisterStore();
