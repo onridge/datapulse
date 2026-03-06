@@ -2,10 +2,9 @@
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
+import { Logo } from "@/components/UI/Logo";
+import { useLogin } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
-
-import { useLogin } from "../../hooks/useAuth";
-import Image from "next/image";
 
 export const LoginForm = () => {
   const [isChecked, setIsChecked] = useState<boolean>(false);
@@ -31,13 +30,13 @@ export const LoginForm = () => {
     setPassword(event.target.value);
   };
 
+  const handleSignUp = () => {
+    router.push("/sign-up");
+  };
+
   return (
     <div className="relative w-[400px] bg-surface border border-border rounded-[20px] p-[40px]">
-      <p className="flex items-center mb-[32px]">
-        <Image className="mr-[8px]" src="/logo.svg" width={32} height={32} alt="DataPulse" />
-        <span className="text-[18px] font-bold tracking-[-0.3px]">Data</span>
-        <span className="text-[18px] font-bold tracking-[-0.3px] text-primg">Pulse</span>
-      </p>
+      <Logo />
       <p className="text-[22px] font-bold tracking-[-0.4px] mb-[6px]">Welcome back</p>
       <p className="text-[13px] text-t3 mb-[28px]">Sign in to your dashboard</p>
 
@@ -88,8 +87,10 @@ export const LoginForm = () => {
       </button>
 
       <div className="text-center text-[12px] text-t3 mt-[24px]">
-        Don't have an account?{""}
-        <span className="text-[12px] text-primg cursor-pointer">Sign up for free</span>
+        Don't have an account?{" "}
+        <span onClick={handleSignUp} className="text-[12px] text-primg cursor-pointer">
+          Sign up for free
+        </span>
       </div>
     </div>
   );
