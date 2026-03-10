@@ -4,9 +4,10 @@ export const gqlClient = new GraphQLClient(
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/graphql",
   {
     headers: () => {
-      const token = localStorage.getItem("token");
+      const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
       return {
-        authorization: token ? `Bearer ${token}` : "",
+        "Content-Type": "application/json",
+        ...(token ? { authorization: `Bearer ${token}` } : {}),
       };
     },
   }

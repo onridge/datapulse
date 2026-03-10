@@ -24,3 +24,35 @@ export const GET_ME_QUERY = gql`
     }
   }
 `;
+
+export const REGISTER_MUTATION = gql`
+  mutation Register(
+    $email: String!
+    $password: String!
+    $firstName: String!
+    $lastName: String!
+    $jobTitle: String
+    $company: String
+    $teamSize: String
+    $usePage: String
+  ) {
+    register(
+      email: $email
+      password: $password
+      firstName: $firstName
+      lastName: $lastName
+      jobTitle: $jobTitle
+      company: $company
+      teamSize: $teamSize
+      usePage: $usePage
+    ) {
+      token
+      user {
+        id
+        email
+        firstName
+        lastName
+      }
+    }
+  }
+`;

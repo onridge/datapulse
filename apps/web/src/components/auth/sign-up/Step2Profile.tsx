@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { AvatarUpload } from "@/components/auth/sign-up/UploadAvatar";
+import { useRegister } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import { useRegisterStore } from "@/store/useRegisterStore";
 
@@ -14,6 +15,7 @@ const PAGES = ["Analytics", "Payments", "CRM", "Reports"];
 
 export function Step2Profile() {
   const { nextStep, prevStep, setData, step, data } = useRegisterStore();
+  const { mutate: register, isPending } = useRegister();
 
   const [jobTitle, setJobTitle] = useState("");
   const [company, setCompany] = useState("");
@@ -22,7 +24,20 @@ export function Step2Profile() {
 
   const handleNext = () => {
     setData({ jobTitle, company, teamSize });
-    nextStep();
+    register(
+      {
+        email: data.email!,
+        password: data.password!,
+        firstName: data.firstName!,
+        lastName: data.lastName!,
+        jobTitle,
+        company,
+        teamSize,
+      },
+      {
+        onSuccess: () => nextStep(),
+      }
+    );
   };
 
   return (
@@ -116,7 +131,7 @@ export function Step2Profile() {
                      rounded-[10px] py-[12px] text-[13px] font-semibold
                      shadow-[0_4px_20px_rgba(99,102,241,0.3)] hover:opacity-90 transition-opacity"
         >
-          Continue → Step 3
+          {isPending ? "Loading" : "Continue → Step 3"}
         </button>
       </div>
     </div>

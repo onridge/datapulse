@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 import { User } from "../models/User";
 import { generateToken } from "../utils/jwt";
@@ -17,7 +18,28 @@ export const resolvers = {
   },
 
   Mutation: {
-    register: async (_: unknown, { email, password }: { email: string; password: string }) => {
+    register: async (
+      _: unknown,
+      {
+        email,
+        password,
+        firstName,
+        lastName,
+        jobTitle,
+        company,
+        teamSize,
+        usePage,
+      }: {
+        email: string;
+        password: string;
+        firstName: string;
+        lastName: string;
+        jobTitle?: string;
+        company?: string;
+        teamSize?: string;
+        usePage?: string;
+      }
+    ) => {
       const existing = await User.findOne({ email });
       if (existing) {
         throw new Error("User already exists");
@@ -28,9 +50,17 @@ export const resolvers = {
       const user = await User.create({
         email,
         password: hashed,
+        firstName,
+        lastName,
+        jobTitle,
+        company,
+        teamSize,
+        usePage,
       });
 
-      const token = generateToken({ id: user.id });
+      const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || "secret", {
+        expiresIn: "7d",
+      });
 
       return { token, user };
     },
