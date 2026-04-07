@@ -18,15 +18,25 @@ export function useLogin() {
   });
 }
 
-export function useMe() {
-  const { token } = useAuthStore();
+export const useInitAuth = () => {
+  const { setAuth, logout, token } = useAuthStore();
 
   return useQuery({
     queryKey: ["me"],
-    queryFn: () => gqlClient.request(GET_ME_QUERY),
+    queryFn: async () => {
+      const data: any = await gqlClient.request(GET_ME_QUERY);
+      if (data?.me) {
+        setAuth(data.me, token!);
+      } else {
+        logout();
+      }
+      return data?.me;
+    },
     enabled: !!token,
+    retry: false,
+    staleTime: 5 * 60 * 1000,
   });
-}
+};
 
 export function useRegister() {
   const { setAuth } = useAuthStore();
