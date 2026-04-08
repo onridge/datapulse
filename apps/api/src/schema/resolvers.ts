@@ -2,19 +2,23 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 import { User } from "../models/User";
-import { generateToken } from "../utils/jwt";
+
+import { dashboardResolvers } from "./dashboardResolvers";
 
 import type { Context } from "../types/context";
 
 export const resolvers = {
   Query: {
     me: async (_: unknown, __: unknown, context: Context) => {
-      if (!context.user) {
+      if (!context.userId) {
         throw new Error("Not authenticated");
       }
-
-      return User.findById(context.user.id);
+      return User.findById(context.userId);
     },
+    dashboardStats: dashboardResolvers.dashboardStats,
+    revenueChart: dashboardResolvers.revenueChart,
+    transactions: dashboardResolvers.transactions,
+    activity: dashboardResolvers.activity,
   },
 
   Mutation: {
@@ -41,12 +45,9 @@ export const resolvers = {
       }
     ) => {
       const existing = await User.findOne({ email });
-      if (existing) {
-        throw new Error("User already exists");
-      }
+      if (existing) throw new Error("User already exists");
 
       const hashed = await bcrypt.hash(password, 10);
-
       const user = await User.create({
         email,
         password: hashed,
@@ -58,7 +59,7 @@ export const resolvers = {
         usePage,
       });
 
-      const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || "secret", {
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || "secret", {
         expiresIn: "7d",
       });
 
@@ -67,16 +68,14 @@ export const resolvers = {
 
     login: async (_: unknown, { email, password }: { email: string; password: string }) => {
       const user = await User.findOne({ email });
-      if (!user) {
-        throw new Error("Invalid credentials");
-      }
+      if (!user) throw new Error("Invalid credentials");
 
       const valid = await bcrypt.compare(password, user.password);
-      if (!valid) {
-        throw new Error("Invalid credentials");
-      }
+      if (!valid) throw new Error("Invalid credentials");
 
-      const token = generateToken({ id: user.id });
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || "secret", {
+        expiresIn: "7d",
+      });
 
       return { token, user };
     },
