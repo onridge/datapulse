@@ -1,6 +1,8 @@
 "use client";
+
+import gsap from "gsap";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Logo } from "@/components/UI/Logo";
 import { useLogin } from "@/hooks/useAuth";
@@ -11,9 +13,31 @@ export const LoginForm = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const handleCheck = () => {
-    setIsChecked((prevState) => !prevState);
-  };
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        ".login-form",
+        { opacity: 0, y: 32, scale: 0.97 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power3.out" }
+      );
+
+      gsap.fromTo(
+        ".login-field",
+        { opacity: 0, x: -12 },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.35,
+          stagger: 0.08,
+          delay: 0.2,
+          ease: "power2.out",
+        }
+      );
+    });
+    return () => ctx.revert();
+  }, []);
+
+  const handleCheck = () => setIsChecked((prev) => !prev);
 
   const router = useRouter();
   const { mutate: login, isPending, error } = useLogin();
@@ -22,44 +46,47 @@ export const LoginForm = () => {
     login({ email, password }, { onSuccess: () => router.push("/dashboard") });
   };
 
-  const handleEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
-  };
-
-  const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-  };
-
-  const handleSignUp = () => {
-    router.push("/sign-up");
-  };
+  const handleEmail = (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
+  const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
+  const handleSignUp = () => router.push("/sign-up");
 
   return (
-    <div className="relative w-[400px] bg-surface border border-border rounded-[20px] p-[40px]">
+    <div className="login-form relative w-[400px] bg-surface border border-border rounded-[20px] p-[40px]">
       <Logo />
       <p className="text-[22px] font-bold tracking-[-0.4px] mb-[6px]">Welcome back</p>
       <p className="text-[13px] text-t3 mb-[28px]">Sign in to your dashboard</p>
 
-      <div className="flex flex-col mb-[16px]">
-        <label className="text-[12px] text-t2 mb-[6px] font-medium">Email adress</label>
+      {error && (
+        <div className="login-field bg-red/10 border border-red/20 text-red text-[12px] rounded-lg px-4 py-2 mb-4">
+          {(error as any).message}
+        </div>
+      )}
+
+      <div className="login-field flex flex-col mb-[16px]">
+        <label className="text-[12px] text-t2 mb-[6px] font-medium">Email address</label>
         <input
-          className="w-[100%] h-[41px] bg-elevated border border-border2 rounded-[10px] px-[14px] py-[11px] text-[13px] text-t1 outline-none transition-colors duration-[150ms]"
+          className="w-full h-[41px] bg-elevated border border-border2 rounded-[10px] px-[14px] py-[11px]
+                     text-[13px] text-t1 outline-none transition-colors duration-[150ms]
+                     focus:border-primary placeholder:text-t3"
           type="email"
           placeholder="you@company.com"
           onChange={handleEmail}
         />
       </div>
-      <div className="flex flex-col mb-[16px]">
+
+      <div className="login-field flex flex-col mb-[16px]">
         <label className="text-[12px] text-t2 mb-[6px] font-medium">Password</label>
         <input
-          className="w-[100%] h-[41px] bg-elevated border border-border2 rounded-[10px] px-[14px] py-[11px] text-[13px] text-t1 outline-none transition-colors duration-[150ms]"
+          className="w-full h-[41px] bg-elevated border border-border2 rounded-[10px] px-[14px] py-[11px]
+                     text-[13px] text-t1 outline-none transition-colors duration-[150ms]
+                     focus:border-primary"
           type="password"
           onChange={handlePassword}
         />
       </div>
 
-      <div className="flex align-center justify-between mb-[24px]">
-        <div className="flex align-center gap-4 text-[12px] text-t3">
+      <div className="login-field flex items-center justify-between mb-[24px]">
+        <div className="flex items-center gap-4 text-[12px] text-t3">
           <div
             onClick={handleCheck}
             className={cn(
@@ -74,16 +101,18 @@ export const LoginForm = () => {
           </div>
           <span>Remember me</span>
         </div>
-        <div>
-          <a className="text-[12px] text-primg cursor-pointer">Forgot password?</a>
-        </div>
+        <a className="text-[12px] text-primg cursor-pointer">Forgot password?</a>
       </div>
 
       <button
-        className="w-[100%] bg-[linear-gradient(135deg,var(--primary),#4f46e5)] text-[#fff] border-none rounded-[10px] p-[13px] text-[14px] text-semibold cursor-pointer shadow-[0_4px_20px_rgba(99,102,241,0.3)] mb-[20px]"
         onClick={handleSubmit}
+        disabled={isPending}
+        className="login-field w-full bg-[linear-gradient(135deg,var(--primary),#4f46e5)] text-white
+                   rounded-[10px] p-[13px] text-[14px] font-semibold cursor-pointer
+                   shadow-[0_4px_20px_rgba(99,102,241,0.3)] mb-[20px]
+                   transition-opacity disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        Sign in →
+        {isPending ? "Signing in..." : "Sign in →"}
       </button>
 
       <div className="text-center text-[12px] text-t3 mt-[24px]">

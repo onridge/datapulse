@@ -1,8 +1,7 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-
 import { useDashboardStats } from "@/hooks/useDashboard";
+import { cn } from "@/lib/utils";
 
 const fmt = (n: number) => (n >= 1000 ? `$${(n / 1000).toFixed(1)}k` : `$${n.toFixed(0)}`);
 
@@ -21,13 +20,25 @@ function StatCard({
   return (
     <div className="bg-surface border border-border rounded-xl p-5">
       <div className="text-[12px] text-t3 font-medium mb-3">{label}</div>
-      <div className="text-[26px] font-bold tracking-[-0.5px] text-t1 mb-2">
+      <div className="text-[24px] font-bold tracking-[-0.5px] text-t1 mb-2">
         {prefix}
         {value}
       </div>
-      <div className={cn("text-[12px] font-medium", positive ? "text-green" : "text-red")}>
-        {positive ? "↑" : "↓"} {Math.abs(change)}% vs last month
+      <div
+        className={cn(
+          "text-[12px] font-medium",
+          positive ? "text-green" : "text-red",
+          "bg-[#22c55e1f]",
+          "py-0.5",
+          "px-2",
+          "align-middle",
+          "inline-flex",
+          "rounded-[20px]"
+        )}
+      >
+        {positive ? "▲" : "▼"} {Math.abs(change)}%
       </div>
+      <p className="text-[11px] text-t3 mt-1">vs last month</p>
     </div>
   );
 }
