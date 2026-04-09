@@ -5,8 +5,6 @@ dns.setServers(["8.8.8.8", "8.8.4.4"]);
 import dotenv from "dotenv";
 dotenv.config();
 
-console.log("MONGO_URI from env:", process.env.MONGO_URI); // ← добавь это
-
 export const config = {
   port: process.env.PORT || 4000,
   mongoUri: process.env.MONGO_URI as string,
