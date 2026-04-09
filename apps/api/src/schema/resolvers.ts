@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 
 import { User } from "../models/User";
 
+import { analyticsResolvers } from "./analyticsResolvers";
 import { dashboardResolvers } from "./dashboardResolvers";
 
 import type { Context } from "../types/context";
@@ -19,6 +20,7 @@ export const resolvers = {
     revenueChart: dashboardResolvers.revenueChart,
     transactions: dashboardResolvers.transactions,
     activity: dashboardResolvers.activity,
+    analytics: analyticsResolvers.analytics,
   },
 
   Mutation: {

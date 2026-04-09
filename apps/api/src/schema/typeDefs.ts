@@ -55,12 +55,59 @@ export const typeDefs = gql`
     avatarColor: String!
   }
 
+  type AnalyticsStats {
+    mrr: Float!
+    mrrChange: Float!
+    churnRate: Float!
+    churnChange: Float!
+    retention: Float!
+    retentionChange: Float!
+    ltv: Float!
+    ltvChange: Float!
+  }
+
+  type TrendPoint {
+    month: String!
+    current: Float!
+    previous: Float!
+  }
+
+  type FunnelStep {
+    label: String!
+    value: Int!
+    pct: Float!
+    color: String!
+  }
+
+  type TopPage {
+    page: String!
+    views: Int!
+    bounce: Int!
+    bouncePos: Boolean!
+    avgTime: String!
+  }
+
+  type TrafficSource {
+    label: String!
+    pct: Int!
+    color: String!
+  }
+
+  type AnalyticsData {
+    stats: AnalyticsStats!
+    trend: [TrendPoint!]!
+    funnel: [FunnelStep!]!
+    topPages: [TopPage!]!
+    traffic: [TrafficSource!]!
+  }
+
   type Query {
     me: User
     dashboardStats: DashboardStats!
     revenueChart(days: Int): [RevenuePoint!]!
     transactions(page: Int, limit: Int, status: String): TransactionsResult!
     activity: [ActivityItem!]!
+    analytics: AnalyticsData!
   }
 
   type Mutation {
