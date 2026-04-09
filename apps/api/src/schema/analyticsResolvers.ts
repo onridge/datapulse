@@ -1,8 +1,8 @@
-import { FunnelStep } from "../../models/FunnelStep";
-import { PageView } from "../../models/PageView";
-import { TrafficSource } from "../../models/TrafficSource";
-import { Transaction } from "../../models/Transaction";
-import { User } from "../../models/User";
+import { FunnelStep } from "../models/FunnelStep";
+import { PageView } from "../models/PageView";
+import { TrafficSource } from "../models/TrafficSource";
+import { Transaction } from "../models/Transaction";
+import { User } from "../models/User";
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
