@@ -49,7 +49,7 @@ async function startServer() {
   await server.start();
   server.applyMiddleware({ app: app as any }); // ← as any фиксит конфликт типов
 
-  app.listen(config.port, () => {
+  app.listen(Number(config.port), "0.0.0.0", () => {
     console.log(`Server running at http://localhost:${config.port}${server.graphqlPath}`);
   });
 }
