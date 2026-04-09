@@ -19,6 +19,7 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 COPY --from=builder /app/apps/api/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/apps/api/node_modules ./node_modules
 COPY apps/api/package.json ./package.json
 
 EXPOSE 4000
