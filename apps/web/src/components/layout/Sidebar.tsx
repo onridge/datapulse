@@ -31,43 +31,36 @@ export function Sidebar() {
         { opacity: 0, x: -20 },
         { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }
       );
-
       gsap.fromTo(
         ".nav-item",
         { opacity: 0, x: -16 },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.35,
-          stagger: 0.07,
-          delay: 0.15,
-          ease: "power2.out",
-        }
+        { opacity: 1, x: 0, duration: 0.35, stagger: 0.07, delay: 0.15, ease: "power2.out" }
       );
-
       gsap.fromTo(
         userRef.current,
         { opacity: 0, y: 12 },
         { opacity: 1, y: 0, duration: 0.4, delay: 0.5, ease: "power2.out" }
       );
     }, navRef);
-
     return () => ctx.revert();
   }, []);
 
   return (
     <aside
       ref={navRef}
-      className="w-[220px] min-h-screen bg-[#090c13] border-r border-border flex flex-col"
+      className="w-[220px] h-screen sticky top-0 bg-[#090c13] border-r border-border flex flex-col"
     >
-      <div ref={logoRef} className="px-5 py-5 border-b border-border flex items-center gap-2.5">
+      <div
+        ref={logoRef}
+        className="px-5 py-5 border-b border-border flex items-center gap-2.5 flex-shrink-0"
+      >
         <div className="w-7 h-7 rounded-lg bg-[linear-gradient(135deg,var(--primary),#06b6d4)] flex items-center justify-center">
           <span className="text-white text-[11px] font-bold">D</span>
         </div>
         <span className="text-[14px] font-bold tracking-[-0.3px] text-t1">DataPulse</span>
       </div>
 
-      <nav className="flex-1 px-3 py-4 space-y-0.5">
+      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
         {NAV.map(({ href, label, icon }) => {
           const active = pathname === href;
           return (
@@ -86,14 +79,14 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div ref={userRef} className="px-3 py-4 border-t border-border">
+      <div ref={userRef} className="px-3 py-4 border-t border-border flex-shrink-0">
         <div className="flex items-center gap-2.5 px-2 py-2 rounded-lg hover:bg-elevated transition-colors cursor-pointer">
           <Avatar firstName={user?.firstName} lastName={user?.lastName} size="sm" />
           <div className="flex-1 min-w-0">
             <div className="text-[12px] font-semibold text-t1 truncate">
               {user?.firstName} {user?.lastName}
             </div>
-            <div className="text-[10px] text-t3 truncate">{user?.email}</div>
+            <div className="text-[10px] text-t3 truncate">{user?.jobTitle ?? "Admin"}</div>
           </div>
           <button onClick={logout} className="text-t3 hover:text-red transition-colors text-[12px]">
             ⏻

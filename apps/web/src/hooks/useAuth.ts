@@ -6,7 +6,7 @@ import { gqlClient } from "@/lib/graphql-client";
 import { LOGIN_MUTATION, GET_ME_QUERY, REGISTER_MUTATION } from "@/queries/auth";
 import { useAuthStore } from "@/store/useAuthStore";
 
-export function useLogin() {
+export const useLogin = () => {
   const { setAuth } = useAuthStore();
 
   return useMutation({
@@ -16,7 +16,7 @@ export function useLogin() {
       setAuth(data.login.user, data.login.token);
     },
   });
-}
+};
 
 export const useInitAuth = () => {
   const { setAuth, logout, token } = useAuthStore();
@@ -38,7 +38,7 @@ export const useInitAuth = () => {
   });
 };
 
-export function useRegister() {
+export const useRegister = () => {
   const { setAuth } = useAuthStore();
 
   return useMutation({
@@ -77,4 +77,4 @@ export function useRegister() {
       setAuth(data.register.user, data.register.token);
     },
   });
-}
+};

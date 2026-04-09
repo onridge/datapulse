@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { useEffect, useRef } from "react";
 
 import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
+import { CategoryDonut } from "@/components/dashboard/CategoryDonut";
 import { RevenueChart } from "@/components/dashboard/RevenueChart";
 import { StatsGrid } from "@/components/dashboard/StatsGrid";
 import { TransactionsTable } from "@/components/dashboard/TransactionsTable";
@@ -16,25 +17,15 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // заголовок сверху
       gsap.fromTo(
         headerRef.current,
         { opacity: 0, y: -16 },
         { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }
       );
-
-      // секции снизу с stagger
       gsap.fromTo(
         ".dashboard-section",
         { opacity: 0, y: 20 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.45,
-          stagger: 0.1,
-          delay: 0.2,
-          ease: "power2.out",
-        }
+        { opacity: 1, y: 0, duration: 0.45, stagger: 0.1, delay: 0.2, ease: "power2.out" }
       );
     });
     return () => ctx.revert();
@@ -53,17 +44,14 @@ export default function DashboardPage() {
         <StatsGrid />
       </div>
 
-      <div className="dashboard-section grid grid-cols-3 gap-6">
-        <div className="col-span-2">
-          <RevenueChart />
-        </div>
-        <div>
-          <ActivityFeed />
-        </div>
+      <div className="dashboard-section grid grid-cols-[1fr_300px] gap-6">
+        <RevenueChart />
+        <CategoryDonut />
       </div>
 
-      <div className="dashboard-section">
+      <div className="dashboard-section grid grid-cols-[1fr_300px] gap-6">
         <TransactionsTable />
+        <ActivityFeed />
       </div>
     </div>
   );

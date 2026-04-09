@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 
-import { cn } from "@/lib/utils";
-
 import { useTransactions } from "@/hooks/useDashboard";
+import { cn } from "@/lib/utils";
 
 const STATUS_STYLES: Record<string, string> = {
   completed: "bg-green/10 text-green",
@@ -12,7 +11,7 @@ const STATUS_STYLES: Record<string, string> = {
   failed: "bg-red/10 text-red",
 };
 
-export function TransactionsTable() {
+export const TransactionsTable = () => {
   const [page, setPage] = useState(1);
   const { data, isLoading } = useTransactions(page, 8);
   const result = (data as any)?.transactions;
@@ -107,4 +106,4 @@ export function TransactionsTable() {
       )}
     </div>
   );
-}
+};

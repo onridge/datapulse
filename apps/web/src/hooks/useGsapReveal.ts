@@ -1,7 +1,7 @@
 import gsap from "gsap";
 import { useEffect, useRef } from "react";
 
-export function useGsapReveal(delay = 0) {
+export const useGsapReveal = (delay = 0) => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -14,4 +14,4 @@ export function useGsapReveal(delay = 0) {
   }, [delay]);
 
   return ref;
-}
+};

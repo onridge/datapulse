@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 
 import type { NextRequest } from "next/server";
 
-const PUBLIC_ROUTES = ["/login", "/register"];
+const PUBLIC_ROUTES = ["/login", "/sign-up"];
 
-export function middleware(request: NextRequest) {
+export const middleware = (request: NextRequest) => {
   const token =
     request.cookies.get("token")?.value ?? request.headers.get("authorization")?.split(" ")[1];
 
@@ -19,7 +19,7 @@ export function middleware(request: NextRequest) {
   }
 
   return NextResponse.next();
-}
+};
 
 export const config = {
   matcher: ["/((?!api|_next|favicon.ico|.*\\.svg).*)"],
