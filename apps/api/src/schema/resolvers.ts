@@ -62,7 +62,7 @@ export const resolvers = {
       });
 
       const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || "secret", {
-        expiresIn: "7d",
+        expiresIn: "14d",
       });
 
       return { token, user };

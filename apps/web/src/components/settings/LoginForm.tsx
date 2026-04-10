@@ -7,11 +7,15 @@ import React, { useEffect, useState } from "react";
 import { Logo } from "@/components/UI/Logo";
 import { useLogin } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export const LoginForm = () => {
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [errorMsg, setErrorMsg] = useState<string>("");
+
+  const { setAuth } = useAuthStore();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -20,18 +24,10 @@ export const LoginForm = () => {
         { opacity: 0, y: 32, scale: 0.97 },
         { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power3.out" }
       );
-
       gsap.fromTo(
         ".login-field",
         { opacity: 0, x: -12 },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.35,
-          stagger: 0.08,
-          delay: 0.2,
-          ease: "power2.out",
-        }
+        { opacity: 1, x: 0, duration: 0.35, stagger: 0.08, delay: 0.2, ease: "power2.out" }
       );
     });
     return () => ctx.revert();
@@ -40,14 +36,33 @@ export const LoginForm = () => {
   const handleCheck = () => setIsChecked((prev) => !prev);
 
   const router = useRouter();
-  const { mutate: login, isPending, error } = useLogin();
+  const { mutate: login, isPending } = useLogin();
 
   const handleSubmit = () => {
-    login({ email, password }, { onSuccess: () => router.push("/dashboard") });
+    if (!email || !password) {
+      setErrorMsg("Please fill in all fields");
+      return;
+    }
+    setErrorMsg("");
+    login(
+      { email, password },
+      {
+        onSuccess: (data: any) => {
+          setAuth(data.login.user, data.login.token, isChecked);
+          router.push("/dashboard");
+        },
+        onError: (err: any) => {
+          const msg = err?.response?.errors?.[0]?.message || "Something went wrong";
+          setErrorMsg(msg);
+        },
+      }
+    );
   };
 
-  const handleEmail = (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
-  const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") handleSubmit();
+  };
+
   const handleSignUp = () => router.push("/sign-up");
 
   return (
@@ -56,9 +71,9 @@ export const LoginForm = () => {
       <p className="text-[22px] font-bold tracking-[-0.4px] mb-[6px]">Welcome back</p>
       <p className="text-[13px] text-t3 mb-[28px]">Sign in to your dashboard</p>
 
-      {error && (
+      {errorMsg && (
         <div className="login-field bg-red/10 border border-red/20 text-red text-[12px] rounded-lg px-4 py-2 mb-4">
-          {(error as any).message}
+          {errorMsg}
         </div>
       )}
 
@@ -70,7 +85,9 @@ export const LoginForm = () => {
                      focus:border-primary placeholder:text-t3"
           type="email"
           placeholder="you@company.com"
-          onChange={handleEmail}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
       </div>
 
@@ -81,7 +98,9 @@ export const LoginForm = () => {
                      text-[13px] text-t1 outline-none transition-colors duration-[150ms]
                      focus:border-primary"
           type="password"
-          onChange={handlePassword}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
       </div>
 

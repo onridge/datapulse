@@ -17,10 +17,16 @@ interface AuthStore {
 
 export const useAuthStore = create<AuthStore>((set) => ({
   user: null,
-  token: typeof window !== "undefined" ? localStorage.getItem("token") : null,
-  setAuth: (user, token) => {
-    localStorage.setItem("token", token);
-    document.cookie = `token=${token}; path=/; max-age=${7 * 24 * 60 * 60}`;
+  token:
+    typeof window !== "undefined"
+      ? localStorage.getItem("token") || sessionStorage.getItem("token")
+      : null,
+  setAuth: (user, token, remember = true) => {
+    if (remember) {
+      localStorage.setItem("token", token); // ← 14 дней
+    } else {
+      sessionStorage.setItem("token", token); // ← до закрытия браузера
+    }
     set({ user, token });
   },
   logout: () => {

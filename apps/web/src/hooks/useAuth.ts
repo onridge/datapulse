@@ -7,14 +7,9 @@ import { LOGIN_MUTATION, GET_ME_QUERY, REGISTER_MUTATION } from "@/queries/auth"
 import { useAuthStore } from "@/store/useAuthStore";
 
 export const useLogin = () => {
-  const { setAuth } = useAuthStore();
-
   return useMutation({
     mutationFn: ({ email, password }: { email: string; password: string }) =>
       gqlClient.request(LOGIN_MUTATION, { email, password }),
-    onSuccess: (data: any) => {
-      setAuth(data.login.user, data.login.token);
-    },
   });
 };
 
@@ -39,8 +34,6 @@ export const useInitAuth = () => {
 };
 
 export const useRegister = () => {
-  const { setAuth } = useAuthStore();
-
   return useMutation({
     mutationFn: async ({
       email,
@@ -61,7 +54,7 @@ export const useRegister = () => {
       teamSize?: string;
       usePage?: string;
     }) => {
-      gqlClient.request(REGISTER_MUTATION, {
+      return gqlClient.request(REGISTER_MUTATION, {
         email,
         password,
         firstName,
@@ -71,10 +64,6 @@ export const useRegister = () => {
         teamSize,
         usePage,
       });
-    },
-
-    onSuccess: (data: any) => {
-      setAuth(data.register.user, data.register.token);
     },
   });
 };

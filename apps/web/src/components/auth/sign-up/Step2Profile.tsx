@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { AvatarUpload } from "@/components/auth/sign-up/UploadAvatar";
 import { useRegister } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useRegisterStore } from "@/store/useRegisterStore";
 
 import { StepIndicator } from "./StepIndicator";
@@ -16,10 +17,14 @@ const PAGES = ["Analytics", "Payments", "CRM", "Reports"];
 export const Step2Profile = () => {
   const { nextStep, prevStep, setData, step, data } = useRegisterStore();
   const { mutate: register, isPending } = useRegister();
+  const { setAuth } = useAuthStore();
+
   const [jobTitle, setJobTitle] = useState("");
   const [company, setCompany] = useState("");
   const [teamSize, setTeamSize] = useState("");
   const [currentPage, setCurrentPage] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+
   const formRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -39,7 +44,9 @@ export const Step2Profile = () => {
   }, []);
 
   const handleNext = () => {
+    setErrorMsg("");
     setData({ jobTitle, company, teamSize });
+
     register(
       {
         email: data.email!,
@@ -50,7 +57,16 @@ export const Step2Profile = () => {
         company,
         teamSize,
       },
-      { onSuccess: () => nextStep() }
+      {
+        onSuccess: (res: any) => {
+          setAuth(res.register.user, res.register.token, true);
+          nextStep();
+        },
+        onError: (err: any) => {
+          const msg = err?.response?.errors?.[0]?.message || err?.message || "Something went wrong";
+          setErrorMsg(msg);
+        },
+      }
     );
   };
 
@@ -67,6 +83,12 @@ export const Step2Profile = () => {
       <p className="step2-field text-t3 text-[13px] mb-6">
         Tell us a bit about yourself and your workspace.
       </p>
+
+      {errorMsg && (
+        <div className="step2-field bg-red/10 border border-red/20 text-red text-[12px] rounded-lg px-4 py-2 mb-4">
+          {errorMsg}
+        </div>
+      )}
 
       <div className="step2-field">
         <AvatarUpload name={data.firstName ?? ""} />
@@ -141,8 +163,10 @@ export const Step2Profile = () => {
       <div className="step2-field flex gap-2">
         <button
           onClick={prevStep}
+          disabled={isPending}
           className="flex-1 bg-elevated border border-border2 text-t2 rounded-[10px]
-                     py-[12px] text-[13px] font-semibold hover:border-border transition-colors"
+                     py-[12px] text-[13px] font-semibold hover:border-border transition-colors
+                     disabled:opacity-50"
         >
           ← Back
         </button>
