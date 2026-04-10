@@ -9,7 +9,7 @@ import { dashboardResolvers } from "./dashboardResolvers";
 
 export const resolvers = {
   Query: {
-    me: async (_: unknown, __: unknown, { userId }: any) => {
+    me: async (_: unknown, __: unknown, { userId }: { userId: string | null }) => {
       if (!userId) return null;
       return User.findById(userId);
     },

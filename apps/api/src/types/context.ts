@@ -1,6 +1,8 @@
+import type { Request, Response } from "express";
+
 export interface Context {
-  req: any;
-  res: any;
+  req: Request;
+  res: Response;
   userId: string | null;
   token: string | null;
 }

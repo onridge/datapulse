@@ -3,8 +3,13 @@ import { User } from "../models/User";
 
 const COLORS = ["#6366f1", "#06b6d4", "#22c55e", "#eab308", "#ef4444", "#a855f7"];
 
+interface TransactionFilter {
+  userId?: string;
+  status?: string;
+}
+
 export const dashboardResolvers = {
-  dashboardStats: async (_: any, __: any, { userId }: { userId: string | null }) => {
+  dashboardStats: async (_: unknown, __: unknown, { userId }: { userId: string | null }) => {
     const now = new Date();
     const start = new Date(now.getFullYear(), now.getMonth(), 1);
     const prev = new Date(now.getFullYear(), now.getMonth() - 1, 1);
@@ -52,7 +57,7 @@ export const dashboardResolvers = {
   },
 
   revenueChart: async (
-    _: any,
+    _: unknown,
     { days = 30 }: { days?: number },
     { userId }: { userId: string | null }
   ) => {
@@ -88,11 +93,11 @@ export const dashboardResolvers = {
   },
 
   transactions: async (
-    _: any,
+    _: unknown,
     { page = 1, limit = 10, status }: { page?: number; limit?: number; status?: string },
     { userId }: { userId: string | null }
   ) => {
-    const filter: any = userId ? { userId } : {};
+    const filter: TransactionFilter = userId ? { userId } : {};
     if (status) filter.status = status;
 
     const [items, total] = await Promise.all([
@@ -111,7 +116,7 @@ export const dashboardResolvers = {
     };
   },
 
-  activity: async (_: any, __: any, { userId }: { userId: string | null }) => {
+  activity: async (_: unknown, __: unknown, { userId }: { userId: string | null }) => {
     const filter = userId ? { userId } : {};
     const txns = await Transaction.find(filter).sort({ createdAt: -1 }).limit(10);
 

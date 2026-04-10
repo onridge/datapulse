@@ -13,7 +13,11 @@ import { resolvers } from "./schema/resolvers";
 import { typeDefs } from "./schema/typeDefs";
 
 import type { Context } from "./types/context";
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
+
+interface JwtPayload {
+  id: string;
+}
 
 async function startServer() {
   const app: Express = express();
@@ -31,13 +35,13 @@ async function startServer() {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: ({ req, res }): Context => {
+    context: ({ req, res }: { req: Request; res: Response }): Context => {
       const token = req.cookies?.token ?? req.headers.authorization?.split(" ")[1];
 
       let userId = null;
       if (token) {
         try {
-          const payload = jwt.verify(token, process.env.JWT_SECRET!) as any;
+          const payload = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
           userId = payload.id;
         } catch {}
       }
@@ -48,7 +52,7 @@ async function startServer() {
 
   await server.start();
 
-  app.get("/", (req, res) => {
+  app.get("/", (_req: Request, res: Response) => {
     res.json({ status: "ok" });
   });
 

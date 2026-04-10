@@ -1,7 +1,7 @@
 import { CategoryStat } from "../models/CategoryStat";
 
 export const categoryResolvers = {
-  categoryStats: async (_: any, __: any, { userId }: { userId: string | null }) => {
+  categoryStats: async (_: unknown, __: unknown, { userId }: { userId: string | null }) => {
     const filter = userId ? { userId } : {};
     const stats = await CategoryStat.find(filter);
     return stats.map((s) => ({

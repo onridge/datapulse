@@ -4,10 +4,12 @@ import { TrafficSource } from "../models/TrafficSource";
 import { Transaction } from "../models/Transaction";
 import { User } from "../models/User";
 
+import type { ITransaction } from "../models/Transaction";
+
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 export const analyticsResolvers = {
-  analytics: async (_: any, __: any, { userId }: { userId: string | null }) => {
+  analytics: async (_: unknown, __: unknown, { userId }: { userId: string | null }) => {
     const now = new Date();
     const curYear = now.getFullYear();
     const curMonth = now.getMonth();
@@ -34,7 +36,7 @@ export const analyticsResolvers = {
         FunnelStep.find({ ...userFilter }).sort({ order: 1 }),
       ]);
 
-    const sum = (txns: any[]) => txns.reduce((s, t) => s + t.amount, 0);
+    const sum = (txns: ITransaction[]) => txns.reduce((s, t) => s + t.amount, 0);
     const pct = (cur: number, prev: number) =>
       prev === 0 ? 100 : Math.round(((cur - prev) / prev) * 100 * 10) / 10;
 
