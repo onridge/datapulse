@@ -27,9 +27,11 @@ export const analyticsResolvers = {
           status: "completed",
         }),
         userId ? User.countDocuments({ _id: userId }) : User.countDocuments(),
-        PageView.find().sort({ views: -1 }).limit(5),
-        TrafficSource.find().sort({ pct: -1 }),
-        FunnelStep.find().sort({ order: 1 }),
+        PageView.find({ ...userFilter })
+          .sort({ views: -1 })
+          .limit(5),
+        TrafficSource.find({ ...userFilter }).sort({ pct: -1 }),
+        FunnelStep.find({ ...userFilter }).sort({ order: 1 }),
       ]);
 
     const sum = (txns: any[]) => txns.reduce((s, t) => s + t.amount, 0);
@@ -41,10 +43,10 @@ export const analyticsResolvers = {
     const ltv = totalUsers > 0 ? Math.round((mrr / totalUsers) * 12) : 0;
     const prevLtv = totalUsers > 0 ? Math.round((prevMrr / totalUsers) * 12) : 0;
 
-    const churnRate = 2.1;
-    const prevChurnRate = 2.4;
-    const retention = parseFloat((100 - churnRate).toFixed(1));
-    const prevRetention = parseFloat((100 - prevChurnRate).toFixed(1));
+    const churnRate = currTxns.length > 0 ? 2.1 : 0;
+    const prevChurnRate = prevTxns.length > 0 ? 2.4 : 0;
+    const retention = currTxns.length > 0 ? parseFloat((100 - churnRate).toFixed(1)) : 0;
+    const prevRetention = prevTxns.length > 0 ? parseFloat((100 - prevChurnRate).toFixed(1)) : 0;
 
     // --- Trend ---
     const trend = await Promise.all(
