@@ -25,7 +25,6 @@ export const Step3Success = () => {
         { opacity: 0, y: 16 },
         { opacity: 1, y: 0, duration: 0.4, stagger: 0.1, delay: 0.2, ease: "power2.out" }
       );
-      // emoji bounce
       gsap.fromTo(
         ".success-emoji",
         { scale: 0, rotation: -20 },

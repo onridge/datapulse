@@ -16,7 +16,6 @@ export function Skeleton({ className, rounded = "md" }: SkeletonProps) {
   return <div className={cn("bg-elevated animate-pulse", roundeds[rounded], className)} />;
 }
 
-// готовые пресеты
 export function SkeletonText({ lines = 3 }: { lines?: number }) {
   return (
     <div className="space-y-2">
