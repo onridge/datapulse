@@ -206,7 +206,7 @@ export default function AnalyticsPage() {
                     fontSize: 12,
                   }}
                   labelStyle={{ color: "#94a3b8" }}
-                  formatter={(v: number) => [`$${v.toFixed(0)}`, ""]}
+                  formatter={(v: any) => [`$${Number(v).toFixed(0)}`, ""]}
                 />
                 <Area
                   type="monotone"
