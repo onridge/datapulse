@@ -11,7 +11,7 @@ interface User {
 interface AuthStore {
   user: User | null;
   token: string | null;
-  setAuth: (user: User, token: string) => void;
+  setAuth: (user: User, token: string, remember?: boolean) => void;
   logout: () => void;
 }
 
@@ -23,15 +23,15 @@ export const useAuthStore = create<AuthStore>((set) => ({
       : null,
   setAuth: (user, token, remember = true) => {
     if (remember) {
-      localStorage.setItem("token", token); // ← 14 дней
+      localStorage.setItem("token", token);
     } else {
-      sessionStorage.setItem("token", token); // ← до закрытия браузера
+      sessionStorage.setItem("token", token);
     }
     set({ user, token });
   },
   logout: () => {
     localStorage.removeItem("token");
-    document.cookie = "token=; path=/; max-age=0";
+    sessionStorage.removeItem("token");
     set({ user: null, token: null });
   },
 }));
