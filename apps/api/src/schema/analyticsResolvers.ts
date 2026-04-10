@@ -7,7 +7,7 @@ import { User } from "../models/User";
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 export const analyticsResolvers = {
-  analytics: async () => {
+  analytics: async (_: any, __: any, { userId }: { userId: string | null }) => {
     const now = new Date();
     const curYear = now.getFullYear();
     const curMonth = now.getMonth();
@@ -16,11 +16,17 @@ export const analyticsResolvers = {
     const startPrev = new Date(curYear, curMonth - 1, 1);
     const endPrev = new Date(curYear, curMonth, 0);
 
+    const userFilter = userId ? { userId } : {};
+
     const [currTxns, prevTxns, totalUsers, pageViews, trafficSources, funnelSteps] =
       await Promise.all([
-        Transaction.find({ createdAt: { $gte: startCur }, status: "completed" }),
-        Transaction.find({ createdAt: { $gte: startPrev, $lte: endPrev }, status: "completed" }),
-        User.countDocuments(),
+        Transaction.find({ ...userFilter, createdAt: { $gte: startCur }, status: "completed" }),
+        Transaction.find({
+          ...userFilter,
+          createdAt: { $gte: startPrev, $lte: endPrev },
+          status: "completed",
+        }),
+        userId ? User.countDocuments({ _id: userId }) : User.countDocuments(),
         PageView.find().sort({ views: -1 }).limit(5),
         TrafficSource.find().sort({ pct: -1 }),
         FunnelStep.find().sort({ order: 1 }),
@@ -49,10 +55,12 @@ export const analyticsResolvers = {
 
         const [cur, prev] = await Promise.all([
           Transaction.find({
+            ...userFilter,
             status: "completed",
             createdAt: { $gte: new Date(yearCur, month, 1), $lte: new Date(yearCur, month + 1, 0) },
           }),
           Transaction.find({
+            ...userFilter,
             status: "completed",
             createdAt: {
               $gte: new Date(yearPrev, month, 1),
