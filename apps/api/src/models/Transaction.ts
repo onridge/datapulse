@@ -3,6 +3,7 @@ import mongoose, { Schema } from "mongoose";
 import type { Document } from "mongoose";
 
 export interface ITransaction extends Document {
+  userId?: mongoose.Types.ObjectId;
   customerName: string;
   customerEmail: string;
   amount: number;
@@ -13,11 +14,12 @@ export interface ITransaction extends Document {
 
 const TransactionSchema = new Schema<ITransaction>(
   {
+    userId: { type: Schema.Types.ObjectId, ref: "User" },
     customerName: { type: String, required: true },
     customerEmail: { type: String, required: true },
     amount: { type: Number, required: true },
-    status: { type: String, enum: ["completed", "pending", "failed"], default: "pending" },
-    method: { type: String, default: "card" },
+    status: { type: String, enum: ["completed", "pending", "failed"] },
+    method: { type: String },
   },
   { timestamps: true }
 );

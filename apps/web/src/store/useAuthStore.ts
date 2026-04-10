@@ -17,15 +17,10 @@ interface AuthStore {
 
 export const useAuthStore = create<AuthStore>((set) => ({
   user: null,
-  token:
-    typeof window !== "undefined"
-      ? localStorage.getItem("token") || sessionStorage.getItem("token")
-      : null,
+  token: typeof window !== "undefined" ? localStorage.getItem("token") : null,
   setAuth: (user, token, remember = true) => {
     if (remember) {
       localStorage.setItem("token", token);
-    } else {
-      sessionStorage.setItem("token", token);
     }
     set({ user, token });
   },

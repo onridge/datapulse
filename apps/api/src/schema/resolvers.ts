@@ -6,15 +6,11 @@ import { User } from "../models/User";
 import { analyticsResolvers } from "./analyticsResolvers";
 import { dashboardResolvers } from "./dashboardResolvers";
 
-import type { Context } from "../types/context";
-
 export const resolvers = {
   Query: {
-    me: async (_: unknown, __: unknown, context: Context) => {
-      if (!context.userId) {
-        throw new Error("Not authenticated");
-      }
-      return User.findById(context.userId);
+    me: async (_: unknown, __: unknown, { userId }: any) => {
+      if (!userId) return null;
+      return User.findById(userId);
     },
     dashboardStats: dashboardResolvers.dashboardStats,
     revenueChart: dashboardResolvers.revenueChart,

@@ -4,21 +4,26 @@ import { User } from "../models/User";
 const COLORS = ["#6366f1", "#06b6d4", "#22c55e", "#eab308", "#ef4444", "#a855f7"];
 
 export const dashboardResolvers = {
-  dashboardStats: async () => {
+  dashboardStats: async (_: any, __: any, { userId }: { userId: string | null }) => {
     const now = new Date();
     const start = new Date(now.getFullYear(), now.getMonth(), 1);
     const prev = new Date(now.getFullYear(), now.getMonth() - 1, 1);
     const prevEnd = new Date(now.getFullYear(), now.getMonth(), 0);
 
+    const userFilter = userId ? { userId } : {};
+
     const [currTxns, prevTxns, totalUsers, prevUsers] = await Promise.all([
-      Transaction.find({ createdAt: { $gte: start } }),
-      Transaction.find({ createdAt: { $gte: prev, $lte: prevEnd } }),
-      User.countDocuments({ createdAt: { $gte: start } }),
-      User.countDocuments({ createdAt: { $gte: prev, $lte: prevEnd } }),
+      Transaction.find({ ...userFilter, createdAt: { $gte: start } }),
+      Transaction.find({ ...userFilter, createdAt: { $gte: prev, $lte: prevEnd } }),
+      userId
+        ? User.countDocuments({ _id: userId, createdAt: { $gte: start } })
+        : User.countDocuments({ createdAt: { $gte: start } }),
+      userId
+        ? User.countDocuments({ _id: userId, createdAt: { $gte: prev, $lte: prevEnd } })
+        : User.countDocuments({ createdAt: { $gte: prev, $lte: prevEnd } }),
     ]);
 
     const totalRevenue = currTxns
-      .filter((t) => t.status === "completed")
       .filter((t) => t.status === "completed")
       .reduce((sum, t) => sum + t.amount, 0);
 
@@ -28,7 +33,6 @@ export const dashboardResolvers = {
 
     const totalOrders = currTxns.length;
     const prevOrders = prevTxns.length;
-
     const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
     const prevAvg = prevOrders > 0 ? prevRevenue / prevOrders : 0;
 
@@ -47,11 +51,18 @@ export const dashboardResolvers = {
     };
   },
 
-  revenueChart: async (_: any, { days = 30 }: { days?: number }) => {
+  revenueChart: async (
+    _: any,
+    { days = 30 }: { days?: number },
+    { userId }: { userId: string | null }
+  ) => {
     const from = new Date();
     from.setDate(from.getDate() - days);
 
+    const userFilter = userId ? { userId } : {};
+
     const txns = await Transaction.find({
+      ...userFilter,
       createdAt: { $gte: from },
       status: "completed",
     }).sort({ createdAt: 1 });
@@ -78,9 +89,10 @@ export const dashboardResolvers = {
 
   transactions: async (
     _: any,
-    { page = 1, limit = 10, status }: { page?: number; limit?: number; status?: string }
+    { page = 1, limit = 10, status }: { page?: number; limit?: number; status?: string },
+    { userId }: { userId: string | null }
   ) => {
-    const filter: any = {};
+    const filter: any = userId ? { userId } : {};
     if (status) filter.status = status;
 
     const [items, total] = await Promise.all([
@@ -99,8 +111,9 @@ export const dashboardResolvers = {
     };
   },
 
-  activity: async () => {
-    const txns = await Transaction.find().sort({ createdAt: -1 }).limit(10);
+  activity: async (_: any, __: any, { userId }: { userId: string | null }) => {
+    const filter = userId ? { userId } : {};
+    const txns = await Transaction.find(filter).sort({ createdAt: -1 }).limit(10);
 
     return txns.map((t) => ({
       id: t.id,

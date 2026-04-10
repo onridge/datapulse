@@ -1,8 +1,9 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import gsap from "gsap";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 import { Avatar } from "@/components/UI/Avatar";
@@ -19,10 +20,13 @@ const NAV = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { user, logout } = useAuthStore();
+  const { user, logout, token } = useAuthStore();
   const navRef = useRef<HTMLElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
   const userRef = useRef<HTMLDivElement>(null);
+
+  const router = useRouter();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -44,6 +48,11 @@ export function Sidebar() {
     }, navRef);
     return () => ctx.revert();
   }, []);
+
+  const handleLogout = () => {
+    logout();
+    queryClient.clear();
+  };
 
   return (
     <aside
@@ -80,18 +89,32 @@ export function Sidebar() {
       </nav>
 
       <div ref={userRef} className="px-3 py-4 border-t border-border flex-shrink-0">
-        <div className="flex items-center gap-2.5 px-2 py-2 rounded-lg hover:bg-elevated transition-colors cursor-pointer">
-          <Avatar firstName={user?.firstName} lastName={user?.lastName} size="sm" />
-          <div className="flex-1 min-w-0">
-            <div className="text-[12px] font-semibold text-t1 truncate">
-              {user?.firstName} {user?.lastName}
+        {token ? (
+          <div className="flex items-center gap-2.5 px-2 py-2 rounded-lg hover:bg-elevated transition-colors cursor-pointer">
+            <Avatar firstName={user?.firstName} lastName={user?.lastName} size="sm" />
+            <div className="flex-1 min-w-0">
+              <div className="text-[12px] font-semibold text-t1 truncate">
+                {user?.firstName} {user?.lastName}
+              </div>
+              <div className="text-[10px] text-t3 truncate">{user?.jobTitle ?? "Admin"}</div>
             </div>
-            <div className="text-[10px] text-t3 truncate">{user?.jobTitle ?? "Admin"}</div>
+            <button
+              onClick={logout}
+              className="text-t3 hover:text-red transition-colors text-[12px] cursor-pointer"
+            >
+              ⏻
+            </button>
           </div>
-          <button onClick={logout} className="text-t3 hover:text-red transition-colors text-[12px]">
-            ⏻
+        ) : (
+          <button
+            onClick={() => router.push("/login")}
+            className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg
+                 bg-primary/10 border border-primary/20 text-primg text-[13px] font-semibold
+                 hover:bg-primary/20 transition-colors cursor-pointer"
+          >
+            Sign in →
           </button>
-        </div>
+        )}
       </div>
     </aside>
   );

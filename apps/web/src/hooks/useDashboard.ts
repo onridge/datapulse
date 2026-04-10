@@ -7,31 +7,36 @@ import {
   GET_TRANSACTIONS,
   GET_ACTIVITY,
 } from "@/queries/dashboard";
+import { useAuthStore } from "@/store/useAuthStore";
 
-export const useDashboardStats = () => {
+export function useDashboardStats() {
+  const { token } = useAuthStore();
   return useQuery({
-    queryKey: ["dashboardStats"],
+    queryKey: ["dashboardStats", token],
     queryFn: () => gqlClient.request(GET_DASHBOARD_STATS),
   });
-};
+}
 
-export const useRevenueChart = (days = 30) => {
+export function useRevenueChart(days = 30) {
+  const { token } = useAuthStore();
   return useQuery({
-    queryKey: ["revenueChart", days],
+    queryKey: ["revenueChart", days, token],
     queryFn: () => gqlClient.request(GET_REVENUE_CHART, { days }),
   });
-};
+}
 
-export const useTransactions = (page = 1, limit = 10, status?: string) => {
+export function useTransactions(page = 1, limit = 10, status?: string) {
+  const { token } = useAuthStore();
   return useQuery({
-    queryKey: ["transactions", page, limit, status],
+    queryKey: ["transactions", page, limit, status, token],
     queryFn: () => gqlClient.request(GET_TRANSACTIONS, { page, limit, status }),
   });
-};
+}
 
-export const useActivity = () => {
+export function useActivity() {
+  const { token } = useAuthStore();
   return useQuery({
-    queryKey: ["activity"],
+    queryKey: ["activity", token],
     queryFn: () => gqlClient.request(GET_ACTIVITY),
   });
-};
+}
