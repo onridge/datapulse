@@ -64,7 +64,7 @@ export const CategoryDonut = () => {
                   borderRadius: 8,
                   fontSize: 12,
                 }}
-                formatter={(value: number) => [`${value}%`, ""]}
+                formatter={(value: any) => [`${value}%`, ""]}
               />
             </PieChart>
           </ResponsiveContainer>

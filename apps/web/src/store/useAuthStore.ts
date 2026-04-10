@@ -5,6 +5,7 @@ interface User {
   firstName: string;
   lastName: string;
   email: string;
+  jobTitle?: string;
 }
 
 interface AuthStore {
