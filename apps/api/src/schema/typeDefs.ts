@@ -101,6 +101,12 @@ export const typeDefs = gql`
     traffic: [TrafficSource!]!
   }
 
+  type CategoryStat {
+    name: String!
+    value: Int!
+    color: String!
+  }
+
   type Query {
     me: User
     dashboardStats: DashboardStats!
@@ -108,6 +114,7 @@ export const typeDefs = gql`
     transactions(page: Int, limit: Int, status: String): TransactionsResult!
     activity: [ActivityItem!]!
     analytics: AnalyticsData!
+    categoryStats: [CategoryStat!]!
   }
 
   type Mutation {

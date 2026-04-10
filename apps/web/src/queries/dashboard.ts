@@ -55,3 +55,13 @@ export const GET_ACTIVITY = gql`
     }
   }
 `;
+
+export const GET_CATEGORY_STATS = gql`
+  query CategoryStats {
+    categoryStats {
+      name
+      value
+      color
+    }
+  }
+`;

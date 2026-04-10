@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { User } from "../models/User";
 
 import { analyticsResolvers } from "./analyticsResolvers";
+import { categoryResolvers } from "./categoryResolvers";
 import { dashboardResolvers } from "./dashboardResolvers";
 
 export const resolvers = {
@@ -17,6 +18,7 @@ export const resolvers = {
     transactions: dashboardResolvers.transactions,
     activity: dashboardResolvers.activity,
     analytics: analyticsResolvers.analytics,
+    categoryStats: categoryResolvers.categoryStats,
   },
 
   Mutation: {

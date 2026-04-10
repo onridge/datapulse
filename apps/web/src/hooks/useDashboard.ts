@@ -6,6 +6,7 @@ import {
   GET_REVENUE_CHART,
   GET_TRANSACTIONS,
   GET_ACTIVITY,
+  GET_CATEGORY_STATS,
 } from "@/queries/dashboard";
 import { useAuthStore } from "@/store/useAuthStore";
 
@@ -38,5 +39,13 @@ export function useActivity() {
   return useQuery({
     queryKey: ["activity", token],
     queryFn: () => gqlClient.request(GET_ACTIVITY),
+  });
+}
+
+export function useCategoryStats() {
+  const { token } = useAuthStore();
+  return useQuery({
+    queryKey: ["categoryStats", token],
+    queryFn: () => gqlClient.request(GET_CATEGORY_STATS),
   });
 }
