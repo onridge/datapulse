@@ -15,11 +15,13 @@ import {
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { cn } from "@/lib/utils";
 
+import type { AnalyticsData, FunnelItem, TopPage, TrafficItem, TrendPoint } from "@/types";
+
 const fmt = (n: number) => (n >= 1000 ? `$${(n / 1000).toFixed(1)}k` : `$${n.toFixed(0)}`);
 
 export default function AnalyticsPage() {
   const { data, isLoading } = useAnalytics();
-  const analytics = (data as any)?.analytics;
+  const analytics = (data as { analytics: AnalyticsData } | undefined)?.analytics;
   const s = analytics?.stats;
 
   const headerRef = useRef<HTMLDivElement>(null);
@@ -58,7 +60,7 @@ export default function AnalyticsPage() {
       ]
     : [];
 
-  const trendData = analytics?.trend
+  const trendData: TrendPoint[] = analytics?.trend
     ? period === "6M"
       ? analytics.trend.slice(-6)
       : analytics.trend
@@ -88,7 +90,6 @@ export default function AnalyticsPage() {
 
   return (
     <div className="p-6 space-y-6">
-      {/* Header */}
       <div ref={headerRef}>
         <h1 className="text-[22px] font-bold tracking-[-0.4px] text-t1">Analytics</h1>
         <p className="text-t3 text-[13px] mt-0.5">Deep dive into your performance metrics.</p>
@@ -136,7 +137,6 @@ export default function AnalyticsPage() {
 
       {/* Row 1 — Trend + Funnel */}
       <div className="analytics-section grid grid-cols-[1fr_400px] gap-6">
-        {/* Revenue Trend */}
         <div className="bg-surface border border-border rounded-xl p-5">
           <div className="flex items-start justify-between mb-1">
             <div>
@@ -196,7 +196,7 @@ export default function AnalyticsPage() {
                   tick={{ fill: "#475569", fontSize: 11 }}
                   tickLine={false}
                   axisLine={false}
-                  tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
+                  tickFormatter={(v: number) => `$${(v / 1000).toFixed(0)}k`}
                 />
                 <Tooltip
                   contentStyle={{
@@ -206,7 +206,7 @@ export default function AnalyticsPage() {
                     fontSize: 12,
                   }}
                   labelStyle={{ color: "#94a3b8" }}
-                  formatter={(v: any) => [`$${Number(v).toFixed(0)}`, ""]}
+                  formatter={(v) => [`$${Number(v).toFixed(0)}`, ""]}
                 />
                 <Area
                   type="monotone"
@@ -237,7 +237,7 @@ export default function AnalyticsPage() {
               ? [...Array(5)].map((_, i) => (
                   <div key={i} className="h-8 bg-elevated rounded-full animate-pulse" />
                 ))
-              : analytics?.funnel.map((item: any) => (
+              : analytics?.funnel.map((item: FunnelItem) => (
                   <div key={item.label} className="flex items-center gap-3">
                     <div className="text-[12px] text-t2 w-[70px] flex-shrink-0">{item.label}</div>
                     <div className="flex-1 bg-elevated rounded-full h-[28px] overflow-hidden">
@@ -261,7 +261,6 @@ export default function AnalyticsPage() {
 
       {/* Row 2 — Top Pages + Traffic */}
       <div className="analytics-section grid grid-cols-[1fr_400px] gap-6">
-        {/* Top Pages */}
         <div className="bg-surface border border-border rounded-xl overflow-hidden">
           <div className="p-5 border-b border-border">
             <div className="text-[14px] font-semibold text-t1">Top Pages</div>
@@ -284,14 +283,14 @@ export default function AnalyticsPage() {
               {isLoading
                 ? [...Array(5)].map((_, i) => (
                     <tr key={i} className="border-b border-border/50">
-                      {[...Array(4)].map((__, j) => (
+                      {[...Array(4)].map((_v, j) => (
                         <td key={j} className="px-5 py-3">
                           <div className="h-4 bg-elevated rounded animate-pulse w-20" />
                         </td>
                       ))}
                     </tr>
                   ))
-                : analytics?.topPages.map((row: any) => (
+                : analytics?.topPages.map((row: TopPage) => (
                     <tr
                       key={row.page}
                       className="border-b border-border/50 hover:bg-elevated/50 transition-colors"
@@ -318,7 +317,6 @@ export default function AnalyticsPage() {
           </table>
         </div>
 
-        {/* Traffic Sources */}
         <div className="bg-surface border border-border rounded-xl p-5">
           <div className="text-[14px] font-semibold text-t1 mb-1">Traffic Sources</div>
           <div className="text-[12px] text-t3 mb-5">Where users come from</div>
@@ -327,7 +325,7 @@ export default function AnalyticsPage() {
               ? [...Array(5)].map((_, i) => (
                   <div key={i} className="h-8 bg-elevated rounded animate-pulse" />
                 ))
-              : analytics?.traffic.map((item: any) => (
+              : analytics?.traffic.map((item: TrafficItem) => (
                   <div key={item.label}>
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="text-[12px] text-t2">{item.label}</span>

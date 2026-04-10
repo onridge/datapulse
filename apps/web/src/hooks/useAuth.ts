@@ -6,6 +6,8 @@ import { gqlClient } from "@/lib/graphql-client";
 import { LOGIN_MUTATION, GET_ME_QUERY, REGISTER_MUTATION } from "@/queries/auth";
 import { useAuthStore } from "@/store/useAuthStore";
 
+import type { User } from "@/types";
+
 export const useLogin = () => {
   return useMutation({
     mutationFn: ({ email, password }: { email: string; password: string }) =>
@@ -19,7 +21,7 @@ export const useInitAuth = () => {
   return useQuery({
     queryKey: ["me"],
     queryFn: async () => {
-      const data: any = await gqlClient.request(GET_ME_QUERY);
+      const data = await gqlClient.request<{ me: User | null }>(GET_ME_QUERY);
       if (data?.me) {
         setAuth(data.me, token!);
       } else {

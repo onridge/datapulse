@@ -3,6 +3,8 @@
 import { useDashboardStats } from "@/hooks/useDashboard";
 import { cn } from "@/lib/utils";
 
+import type { DashboardStats } from "@/types";
+
 const fmt = (n: number) => (n >= 1000 ? `$${(n / 1000).toFixed(1)}k` : `$${n.toFixed(0)}`);
 
 function StatCard({
@@ -45,7 +47,7 @@ function StatCard({
 
 export function StatsGrid() {
   const { data, isLoading } = useDashboardStats();
-  const s = (data as any)?.dashboardStats;
+  const s = (data as { dashboardStats: DashboardStats } | undefined)?.dashboardStats;
 
   if (isLoading)
     return (
@@ -66,8 +68,16 @@ export function StatsGrid() {
         value={fmt(s?.totalRevenue ?? 0)}
         change={s?.revenueChange ?? 0}
       />
-      <StatCard label="Total Users" value={s?.totalUsers ?? 0} change={s?.usersChange ?? 0} />
-      <StatCard label="Total Orders" value={s?.totalOrders ?? 0} change={s?.ordersChange ?? 0} />
+      <StatCard
+        label="Total Users"
+        value={String(s?.totalUsers ?? 0)}
+        change={s?.usersChange ?? 0}
+      />
+      <StatCard
+        label="Total Orders"
+        value={String(s?.totalOrders ?? 0)}
+        change={s?.ordersChange ?? 0}
+      />
       <StatCard
         label="Avg Order Value"
         value={fmt(s?.avgOrderValue ?? 0)}

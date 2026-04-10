@@ -15,6 +15,8 @@ import {
 import { useRevenueChart } from "@/hooks/useDashboard";
 import { cn } from "@/lib/utils";
 
+import type { RevenuePoint } from "@/types";
+
 const PERIODS = [
   { label: "7D", days: 7 },
   { label: "30D", days: 30 },
@@ -24,7 +26,7 @@ const PERIODS = [
 export const RevenueChart = () => {
   const [days, setDays] = useState(30);
   const { data, isLoading } = useRevenueChart(days);
-  const points = (data as any)?.revenueChart ?? [];
+  const points = (data as { revenueChart: RevenuePoint[] } | undefined)?.revenueChart ?? [];
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

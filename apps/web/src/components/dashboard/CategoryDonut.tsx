@@ -6,12 +6,14 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
 import { useCategoryStats } from "@/hooks/useDashboard";
 
+import type { CategoryStat } from "@/types";
+
 export const CategoryDonut = () => {
   const { data, isLoading } = useCategoryStats();
-  const items = (data as any)?.categoryStats ?? [];
+  const items = (data as { categoryStats: CategoryStat[] } | undefined)?.categoryStats ?? [];
   const ref = useRef<HTMLDivElement>(null);
 
-  const total = items.reduce((sum: number, i: any) => sum + i.value, 0);
+  const total = items.reduce((sum: number, i) => sum + i.value, 0);
 
   useEffect(() => {
     if (isLoading) return;
@@ -59,7 +61,7 @@ export const CategoryDonut = () => {
                   dataKey="value"
                   strokeWidth={0}
                 >
-                  {items.map((entry: any, i: number) => (
+                  {items.map((entry, i: number) => (
                     <Cell key={i} fill={entry.color} />
                   ))}
                 </Pie>
@@ -70,7 +72,7 @@ export const CategoryDonut = () => {
                     borderRadius: 8,
                     fontSize: 12,
                   }}
-                  formatter={(value: any) => [`${value}%`, ""]}
+                  formatter={(value) => [`${value}%`, ""]}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -80,7 +82,7 @@ export const CategoryDonut = () => {
           </div>
 
           <div className="flex-1 space-y-2">
-            {items.map((item: any) => (
+            {items.map((item) => (
               <div key={item.name} className="donut-row flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div

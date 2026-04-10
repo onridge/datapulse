@@ -5,6 +5,8 @@ import { useState } from "react";
 import { useTransactions } from "@/hooks/useDashboard";
 import { cn } from "@/lib/utils";
 
+import type { TransactionsResult } from "@/types";
+
 const STATUS_STYLES: Record<string, string> = {
   completed: "bg-green/10 text-green",
   pending: "bg-yellow/10 text-yellow",
@@ -14,7 +16,7 @@ const STATUS_STYLES: Record<string, string> = {
 export const TransactionsTable = () => {
   const [page, setPage] = useState(1);
   const { data, isLoading } = useTransactions(page, 8);
-  const result = (data as any)?.transactions;
+  const result = (data as { transactions: TransactionsResult } | undefined)?.transactions;
 
   return (
     <div className="bg-surface border border-border rounded-xl overflow-hidden">

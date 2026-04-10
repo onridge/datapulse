@@ -2,6 +2,8 @@
 
 import { useActivity } from "@/hooks/useDashboard";
 
+import type { ActivityItem } from "@/types";
+
 const TYPE_CONFIG: Record<string, { label: string; color: string; dot: string }> = {
   completed: { label: "New subscription", color: "text-green", dot: "bg-green" },
   pending: { label: "Payment pending", color: "text-yellow", dot: "bg-yellow" },
@@ -18,7 +20,7 @@ const timeAgo = (iso: string) => {
 
 export const ActivityFeed = () => {
   const { data, isLoading } = useActivity();
-  const items = (data as any)?.activity ?? [];
+  const items = (data as { activity: ActivityItem[] } | undefined)?.activity ?? [];
 
   return (
     <div className="bg-surface border border-border rounded-xl overflow-hidden">
@@ -38,7 +40,7 @@ export const ActivityFeed = () => {
                 </div>
               </div>
             ))
-          : items.map((item: any) => {
+          : items.map((item: ActivityItem) => {
               const cfg = TYPE_CONFIG[item.type] ?? {
                 label: "Event",
                 color: "text-t2",

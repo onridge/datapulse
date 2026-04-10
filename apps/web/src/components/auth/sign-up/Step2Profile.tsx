@@ -11,6 +11,8 @@ import { useRegisterStore } from "@/store/useRegisterStore";
 
 import { StepIndicator } from "./StepIndicator";
 
+import type { User } from "@/types";
+
 const TEAM_SIZES = ["1", "2–10", "11–50", "50+"];
 const PAGES = ["Analytics", "Payments", "CRM", "Reports"];
 
@@ -58,12 +60,14 @@ export const Step2Profile = () => {
         teamSize,
       },
       {
-        onSuccess: (res: any) => {
-          setAuth(res.register.user, res.register.token, true);
+        onSuccess: (res: unknown) => {
+          const { register } = res as { register: { user: User; token: string } };
+          setAuth(register.user, register.token, true);
           nextStep();
         },
-        onError: (err: any) => {
-          const msg = err?.response?.errors?.[0]?.message || err?.message || "Something went wrong";
+        onError: (err: unknown) => {
+          const e = err as { response?: { errors?: { message: string }[] }; message?: string };
+          const msg = e?.response?.errors?.[0]?.message || e?.message || "Something went wrong";
           setErrorMsg(msg);
         },
       }

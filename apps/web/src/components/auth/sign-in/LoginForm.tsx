@@ -9,6 +9,26 @@ import { useLogin } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 
+import type { User } from "@/types/auth";
+
+interface LoginResponse {
+  login: {
+    user: User;
+    token: string;
+  };
+}
+
+interface GraphQLError {
+  message: string;
+}
+
+interface RequestError {
+  response?: {
+    errors?: GraphQLError[];
+  };
+  message?: string;
+}
+
 export const LoginForm = () => {
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
@@ -47,12 +67,14 @@ export const LoginForm = () => {
     login(
       { email, password },
       {
-        onSuccess: (data: any) => {
-          setAuth(data.login.user, data.login.token, isChecked);
+        onSuccess: (data: unknown) => {
+          const res = data as LoginResponse;
+          setAuth(res.login.user, res.login.token, isChecked);
           router.push("/dashboard");
         },
-        onError: (err: any) => {
-          const msg = err?.response?.errors?.[0]?.message || "Something went wrong";
+        onError: (err: unknown) => {
+          const e = err as RequestError;
+          const msg = e?.response?.errors?.[0]?.message || e?.message || "Something went wrong";
           setErrorMsg(msg);
         },
       }
