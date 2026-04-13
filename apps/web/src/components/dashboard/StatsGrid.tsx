@@ -1,5 +1,7 @@
 "use client";
 
+import { TrendingUp, TrendingDown } from "lucide-react";
+
 import { useDashboardStats } from "@/hooks/useDashboard";
 import { cn } from "@/lib/utils";
 
@@ -28,17 +30,12 @@ function StatCard({
       </div>
       <div
         className={cn(
-          "text-[12px] font-medium",
-          positive ? "text-green" : "text-red",
-          "bg-[#22c55e1f]",
-          "py-0.5",
-          "px-2",
-          "align-middle",
-          "inline-flex",
-          "rounded-[20px]"
+          "text-[12px] font-medium inline-flex items-center gap-1 py-0.5 px-2 rounded-full",
+          positive ? "text-green bg-green/10" : "text-red bg-red/10"
         )}
       >
-        {positive ? "▲" : "▼"} {Math.abs(change)}%
+        {positive ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
+        {Math.abs(change)}%
       </div>
       <p className="text-[11px] text-t3 mt-1">vs last month</p>
     </div>

@@ -2,6 +2,7 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import gsap from "gsap";
+import { LayoutDashboard, TrendingUp, ArrowLeftRight, Users, Settings, LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
@@ -12,11 +13,11 @@ import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 
 const NAV = [
-  { href: "/dashboard", label: "Dashboard", icon: "▦", isShow: true },
-  { href: "/analytics", label: "Analytics", icon: "↗", isShow: true },
-  { href: "/transactions", label: "Transactions", icon: "⇄", isShow: false },
-  { href: "/customers", label: "Customers", icon: "◎", isShow: false },
-  { href: "/settings", label: "Settings", icon: "⚙", isShow: false },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, isShow: true },
+  { href: "/analytics", label: "Analytics", icon: TrendingUp, isShow: true },
+  { href: "/transactions", label: "Transactions", icon: ArrowLeftRight, isShow: true },
+  { href: "/customers", label: "Customers", icon: Users, isShow: false },
+  { href: "/settings", label: "Settings", icon: Settings, isShow: false },
 ];
 
 export function Sidebar() {
@@ -68,7 +69,7 @@ export function Sidebar() {
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-        {NAV.map(({ href, label, icon, isShow }) => {
+        {NAV.map(({ href, label, icon: Icon, isShow }) => {
           const active = pathname === href;
           return (
             isShow && (
@@ -80,7 +81,7 @@ export function Sidebar() {
                   active ? "bg-primary/10 text-primg" : "text-t3 hover:text-t2 hover:bg-elevated"
                 )}
               >
-                <span className="text-[15px]">{icon}</span>
+                <Icon size={16} />
                 {label}
               </Link>
             )
@@ -100,9 +101,9 @@ export function Sidebar() {
             </div>
             <button
               onClick={handleLogout}
-              className="text-t3 hover:text-red transition-colors text-[12px] cursor-pointer"
+              className="text-t3 hover:text-red transition-colors cursor-pointer"
             >
-              ⏻
+              <LogOut size={14} />
             </button>
           </div>
         ) : (

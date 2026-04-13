@@ -1,6 +1,7 @@
 "use client";
 
 import gsap from "gsap";
+import { DollarSign, TrendingDown, RefreshCw, Zap, TrendingUp } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import {
   AreaChart,
@@ -34,28 +35,28 @@ export default function AnalyticsPage() {
           value: fmt(s.mrr),
           change: s.mrrChange,
           positive: s.mrrChange >= 0,
-          icon: "💰",
+          icon: DollarSign,
         },
         {
           label: "CHURN RATE",
           value: `${s.churnRate}%`,
           change: s.churnChange,
           positive: s.churnChange <= 0,
-          icon: "📉",
+          icon: TrendingDown,
         },
         {
           label: "RETENTION",
           value: `${s.retention}%`,
           change: s.retentionChange,
           positive: s.retentionChange >= 0,
-          icon: "🔄",
+          icon: RefreshCw,
         },
         {
           label: "LTV",
           value: fmt(s.ltv),
           change: s.ltvChange,
           positive: s.ltvChange >= 0,
-          icon: "💡",
+          icon: Zap,
         },
       ]
     : [];
@@ -116,7 +117,11 @@ export default function AnalyticsPage() {
                       : "bg-gradient-to-r from-red/60 to-yellow/60"
                   }`}
                 />
-                <div className="text-[20px] mb-2">{stat.icon}</div>
+                <div
+                  className={`w-8 h-8 rounded-lg flex items-center justify-center mb-3 ${stat.positive ? "bg-primary/10 text-primg" : "bg-red/10 text-red"}`}
+                >
+                  <stat.icon size={16} />
+                </div>
                 <div className="text-[11px] font-semibold text-t3 uppercase tracking-wider mb-1">
                   {stat.label}
                 </div>
@@ -128,7 +133,8 @@ export default function AnalyticsPage() {
                     stat.positive ? "bg-green/10 text-green" : "bg-red/10 text-red"
                   }`}
                 >
-                  {stat.positive ? "▲" : "▼"} {Math.abs(stat.change)}%
+                  {stat.positive ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
+                  {Math.abs(stat.change)}%
                 </div>
                 <div className="text-[11px] text-t3 mt-1">vs last month</div>
               </div>
