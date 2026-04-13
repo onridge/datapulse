@@ -107,11 +107,20 @@ export const typeDefs = gql`
     color: String!
   }
 
+  type TransactionStats {
+    completed: Int!
+    pending: Int!
+    failed: Int!
+    totalVolume: Float!
+    volumeChange: Float!
+  }
+
   type Query {
     me: User
     dashboardStats: DashboardStats!
     revenueChart(days: Int): [RevenuePoint!]!
     transactions(page: Int, limit: Int, status: String): TransactionsResult!
+    transactionStats: TransactionStats!
     activity: [ActivityItem!]!
     analytics: AnalyticsData!
     categoryStats: [CategoryStat!]!

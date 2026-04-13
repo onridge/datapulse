@@ -116,6 +116,34 @@ export const dashboardResolvers = {
     };
   },
 
+  transactionStats: async (_: unknown, __: unknown, { userId }: { userId: string | null }) => {
+    const userFilter = userId ? { userId } : {};
+
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth(), 1);
+    const prev = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const prevEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+
+    const [completed, pending, failed, currVolumeTxns, prevVolumeTxns] = await Promise.all([
+      Transaction.countDocuments({ ...userFilter, status: "completed" }),
+      Transaction.countDocuments({ ...userFilter, status: "pending" }),
+      Transaction.countDocuments({ ...userFilter, status: "failed" }),
+      Transaction.find({ ...userFilter, status: "completed", createdAt: { $gte: start } }),
+      Transaction.find({
+        ...userFilter,
+        status: "completed",
+        createdAt: { $gte: prev, $lte: prevEnd },
+      }),
+    ]);
+
+    const totalVolume = currVolumeTxns.reduce((sum, t) => sum + t.amount, 0);
+    const prevVolume = prevVolumeTxns.reduce((sum, t) => sum + t.amount, 0);
+    const volumeChange =
+      prevVolume === 0 ? 100 : Math.round(((totalVolume - prevVolume) / prevVolume) * 1000) / 10;
+
+    return { completed, pending, failed, totalVolume, volumeChange };
+  },
+
   activity: async (_: unknown, __: unknown, { userId }: { userId: string | null }) => {
     const filter = userId ? { userId } : {};
     const txns = await Transaction.find(filter).sort({ createdAt: -1 }).limit(10);

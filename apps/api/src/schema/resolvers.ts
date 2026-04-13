@@ -16,6 +16,7 @@ export const resolvers = {
     dashboardStats: dashboardResolvers.dashboardStats,
     revenueChart: dashboardResolvers.revenueChart,
     transactions: dashboardResolvers.transactions,
+    transactionStats: dashboardResolvers.transactionStats,
     activity: dashboardResolvers.activity,
     analytics: analyticsResolvers.analytics,
     categoryStats: categoryResolvers.categoryStats,
