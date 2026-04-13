@@ -5,6 +5,7 @@ import {
   GET_DASHBOARD_STATS,
   GET_REVENUE_CHART,
   GET_TRANSACTIONS,
+  GET_TRANSACTION_STATS,
   GET_ACTIVITY,
   GET_CATEGORY_STATS,
 } from "@/queries/dashboard";
@@ -31,6 +32,14 @@ export function useTransactions(page = 1, limit = 10, status?: string) {
   return useQuery({
     queryKey: ["transactions", page, limit, status, token],
     queryFn: () => gqlClient.request(GET_TRANSACTIONS, { page, limit, status }),
+  });
+}
+
+export function useTransactionStats() {
+  const { token } = useAuthStore();
+  return useQuery({
+    queryKey: ["transactionStats", token],
+    queryFn: () => gqlClient.request(GET_TRANSACTION_STATS),
   });
 }
 

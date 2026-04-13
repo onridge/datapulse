@@ -40,6 +40,14 @@ export interface ActivityItem {
   avatarColor: string;
 }
 
+export interface TransactionStats {
+  completed: number;
+  pending: number;
+  failed: number;
+  totalVolume: number;
+  volumeChange: number;
+}
+
 export interface CategoryStat {
   name: string;
   value: number;

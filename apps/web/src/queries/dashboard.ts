@@ -44,6 +44,18 @@ export const GET_TRANSACTIONS = gql`
   }
 `;
 
+export const GET_TRANSACTION_STATS = gql`
+  query TransactionStats {
+    transactionStats {
+      completed
+      pending
+      failed
+      totalVolume
+      volumeChange
+    }
+  }
+`;
+
 export const GET_ACTIVITY = gql`
   query Activity {
     activity {
