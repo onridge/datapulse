@@ -53,3 +53,32 @@ export interface CategoryStat {
   value: number;
   color: string;
 }
+
+export interface Customer {
+  id: string;
+  customerName: string;
+  customerEmail: string;
+  totalSpent: number;
+  orderCount: number;
+  firstOrder: string;
+  lastOrder: string;
+  plan: string;
+}
+
+export interface CustomersResult {
+  items: Customer[];
+  total: number;
+  page: number;
+  totalPages: number;
+}
+
+export interface CustomerStats {
+  total: number;
+  totalChange: number;
+  newCustomers: number;
+  newChange: number;
+  premium: number;
+  premiumChange: number;
+  churned: number;
+  churnedChange: number;
+}

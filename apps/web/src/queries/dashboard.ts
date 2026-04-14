@@ -77,3 +77,49 @@ export const GET_CATEGORY_STATS = gql`
     }
   }
 `;
+
+export const GET_CUSTOMERS = gql`
+  query Customers($page: Int, $limit: Int, $plan: String, $search: String) {
+    customers(page: $page, limit: $limit, plan: $plan, search: $search) {
+      items {
+        id
+        customerName
+        customerEmail
+        totalSpent
+        orderCount
+        firstOrder
+        lastOrder
+        plan
+      }
+      total
+      page
+      totalPages
+    }
+  }
+`;
+
+export const CREATE_CUSTOMER = gql`
+  mutation CreateCustomer($name: String!, $email: String!, $plan: String) {
+    createCustomer(name: $name, email: $email, plan: $plan) {
+      id
+      customerName
+      customerEmail
+      plan
+    }
+  }
+`;
+
+export const GET_CUSTOMER_STATS = gql`
+  query CustomerStats {
+    customerStats {
+      total
+      totalChange
+      newCustomers
+      newChange
+      premium
+      premiumChange
+      churned
+      churnedChange
+    }
+  }
+`;

@@ -5,6 +5,7 @@ import { User } from "../models/User";
 
 import { analyticsResolvers } from "./analyticsResolvers";
 import { categoryResolvers } from "./categoryResolvers";
+import { customerResolvers } from "./customerResolvers";
 import { dashboardResolvers } from "./dashboardResolvers";
 
 export const resolvers = {
@@ -20,9 +21,12 @@ export const resolvers = {
     activity: dashboardResolvers.activity,
     analytics: analyticsResolvers.analytics,
     categoryStats: categoryResolvers.categoryStats,
+    customers: customerResolvers.customers,
+    customerStats: customerResolvers.customerStats,
   },
 
   Mutation: {
+    createCustomer: customerResolvers.createCustomer,
     register: async (
       _: unknown,
       {

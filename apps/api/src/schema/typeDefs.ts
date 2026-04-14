@@ -115,6 +115,35 @@ export const typeDefs = gql`
     volumeChange: Float!
   }
 
+  type Customer {
+    id: ID!
+    customerName: String!
+    customerEmail: String!
+    totalSpent: Float!
+    orderCount: Int!
+    firstOrder: String!
+    lastOrder: String!
+    plan: String!
+  }
+
+  type CustomersResult {
+    items: [Customer!]!
+    total: Int!
+    page: Int!
+    totalPages: Int!
+  }
+
+  type CustomerStats {
+    total: Int!
+    totalChange: Float!
+    newCustomers: Int!
+    newChange: Float!
+    premium: Int!
+    premiumChange: Float!
+    churned: Int!
+    churnedChange: Float!
+  }
+
   type Query {
     me: User
     dashboardStats: DashboardStats!
@@ -124,9 +153,12 @@ export const typeDefs = gql`
     activity: [ActivityItem!]!
     analytics: AnalyticsData!
     categoryStats: [CategoryStat!]!
+    customers(page: Int, limit: Int, plan: String, search: String): CustomersResult!
+    customerStats: CustomerStats!
   }
 
   type Mutation {
+    createCustomer(name: String!, email: String!, plan: String): Customer!
     register(
       email: String!
       password: String!
