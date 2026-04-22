@@ -29,7 +29,11 @@ async function startServer() {
     })
   );
 
-  await mongoose.connect(config.mongoUri);
+  await mongoose.connect(config.mongoUri, {
+    tls: true,
+    tlsAllowInvalidCertificates: false,
+    serverSelectionTimeoutMS: 5000,
+  });
   console.log("✓ Connected to MongoDB");
 
   const server = new ApolloServer({
