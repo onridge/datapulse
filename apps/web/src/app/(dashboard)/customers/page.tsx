@@ -2,6 +2,7 @@
 
 import gsap from "gsap";
 import { Users, UserPlus, Crown, UserMinus, TrendingUp, TrendingDown, Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { AddCustomerModal } from "@/components/customers/AddCustomerModal";
@@ -9,6 +10,7 @@ import { CustomerCards } from "@/components/customers/CustomerCards";
 import { CustomersTable } from "@/components/customers/CustomersTable";
 import { useCustomerStats } from "@/hooks/useDashboard";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/useAuthStore";
 
 import type { CustomerStats } from "@/types";
 
@@ -60,6 +62,8 @@ const FILTERS = ["all", "premium", "free", "churned"] as const;
 
 export default function CustomersPage() {
   const { data, isLoading } = useCustomerStats();
+  const { token } = useAuthStore();
+  const router = useRouter();
   const stats = (data as { customerStats: CustomerStats } | undefined)?.customerStats;
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -183,7 +187,7 @@ export default function CustomersPage() {
         ))}
 
         <button
-          onClick={() => setModalOpen(true)}
+          onClick={() => (token ? setModalOpen(true) : router.push("/login"))}
           className="ml-auto flex items-center gap-1.5 bg-primary text-white text-[12px] font-semibold px-4 py-[7px] rounded-lg hover:bg-primary/90 transition-colors"
         >
           + Add Customer
